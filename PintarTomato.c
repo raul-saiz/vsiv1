@@ -22,6 +22,10 @@ typedef unsigned char MonVoxels[DIM][DIM][64];
 MonVoxels MonActual;
 GLenum  doubleBuffer, mode;
 int     PLA;
+struct punto{
+	int x;
+	int y;
+};
 
 
 void iniValors() {
@@ -88,96 +92,205 @@ void runlength (int minx,int miny,int maxx,int maxy,int PLANO,int interval){
 	incremento = (colormax-colormin)/interval;
 	tipo =0;
 	k=0;
+
+	struct punto pini,pfin;
+	pini.x=0;
+	pini.y=0;
+	pfin.x=0;
+	pfin.y=0;
+
 	for (i=minx;i<maxx;i++)
-			for(j=miny;j<maxy;j++){
-				if (MonActual[i][j][PLANO]<colormin+incremento && interval>0){
-					if(tipo>0) k++;
-					muestreo[k][0]++;
-					tipo=0;
+		for(j=miny;j<maxy;j++){
+			//				if (MonActual[i][j][PLANO]<15){
+			//					if(tipo>0){
+			//						k++;
+			//						pfin.x=i;
+			//						pfin.y=j;
+			//					}
+			//					muestreo[k][0]++;
+			//					tipo=0;
+			//				}
+			//				if (MonActual[i][j][PLANO]>=15){
+			//					if(tipo==0){
+			//						// comprobar los extremos de las lineas y dibujar dos lineas si toca
+			//						glBegin(GL_LINE_STRIP);
+			//						  glColor3f(1.0,1.0,1.0);
+			////						  do {
+			////							  glVertex3f((float)pini.x,(float)pini.y,0.0);
+			////							  pini.x++;
+			////						  } while (pini.x < pfin.x);
+			//						  glVertex3f((float)pini.x,(float)pini.y,0.0);
+			//						  glVertex3f((float)pfin.x,(float)pfin.y,0.0);
+			//						glEnd();
+			//						 glFlush();
+			//						pini.x=i;
+			//						pini.y=j; //debo recoger los max i min para pintar
+			//					}
+			//					muestreo[k][1]++;
+			//					tipo=1;
+			//				}
+
+			if (MonActual[i][j][PLANO]<colormin+incremento && interval>0){
+				if(tipo>0){
+					k++;
+
+
 				}
-				if (MonActual[i][j][PLANO]>=colormin+incremento && MonActual[i][j][PLANO]<colormin+incremento*2 && interval>1){
-					if(tipo>1)k++;
-					muestreo[k][1]++;
-					tipo=1;
+				muestreo[k][0]++;
+				tipo=0;
+			}
+			if (tipo==0){
+				pfin.x=i;
+				pfin.y=j;
+				glBegin(GL_LINE_STRIP);
+				glColor3f(0.2,0.2,0.2);
+				glVertex3f((float)pini.x,(float)pini.y,0.0);
+				glVertex3f((float)pfin.x,(float)pfin.y,0.0);
+				glEnd();
+				glFlush();
+				pini.x=i;
+				pini.y=j; //debo recoger los max i min para pintar
+			}
+			if (MonActual[i][j][PLANO]>=colormin+incremento && MonActual[i][j][PLANO]<colormin+incremento*2 && interval>1){
+				if(tipo>1) {
+					k++;
+
 				}
-				if (MonActual[i][j][PLANO]>=colormin+incremento*2 && MonActual[i][j][PLANO]<colormin+incremento*3 && interval>2){
-					if(tipo>2)k++;
-					muestreo[k][2]++;
-					tipo=2;
+				muestreo[k][1]++;
+				tipo=1;
+			}
+			if (tipo==1){
+
+				pfin.x=i;
+				pfin.y=j;
+				glBegin(GL_LINE_STRIP);
+				glColor3f(0.4,0.4,0.4);
+				glVertex3f((float)pini.x,(float)pini.y,0.0);
+				glVertex3f((float)pfin.x,(float)pfin.y,0.0);
+				glEnd();
+				glFlush();
+				pini.x=i;
+				pini.y=j; //debo recoger los max i min para pintar
+			}
+			if (MonActual[i][j][PLANO]>=colormin+incremento*2 && MonActual[i][j][PLANO]<colormin+incremento*3 && interval>2){
+				if(tipo>2){
+					k++;
+
 				}
-				if (MonActual[i][j][PLANO]>=colormin+incremento*3 && MonActual[i][j][PLANO]<colormin+incremento*4 && interval>3){
-					if(tipo>3)k++;
-					muestreo[k][3]++;
-					tipo=3;
+				muestreo[k][2]++;
+				tipo=2;
+			}
+			if (tipo==2){
+				pfin.x=i;
+				pfin.y=j;
+				glBegin(GL_LINE_STRIP);
+				glColor3f(0.6,0.6,0.6);
+				glVertex3f((float)pini.x,(float)pini.y,0.0);
+				glVertex3f((float)pfin.x,(float)pfin.y,0.0);
+				glEnd();
+				glFlush();
+				pini.x=i;
+				pini.y=j; //debo recoger los max i min para pintar
+
+			}
+			if (MonActual[i][j][PLANO]>=colormin+incremento*3 && MonActual[i][j][PLANO]<colormin+incremento*4 && interval>3){
+				if(tipo>3){
+					k++;
+
+
 				}
-				if (MonActual[i][j][PLANO]>=colormin+incremento*4 && MonActual[i][j][PLANO]<colormin+incremento*5 && interval>4){
-					muestreo[k][4]++;
-					tipo=4;
-				}
+				muestreo[k][3]++;
+				tipo=3;
+			}
+			if (tipo==3){
+				pfin.x=i;
+				pfin.y=j;
+				glBegin(GL_LINE_STRIP);
+				glColor3f(0.8,0.8,0.8);
+				glVertex3f((float)pini.x,(float)pini.y,0.0);
+				glVertex3f((float)pfin.x,(float)pfin.y,0.0);
+				glEnd();
+				glFlush();
+				pini.x=i;
+				pini.y=j; //debo recoger los max i min para pintar
+			}
+			if (MonActual[i][j][PLANO]>=colormin+incremento*4 && MonActual[i][j][PLANO]<colormin+incremento*5 && interval>4){
+				muestreo[k][4]++;
+				tipo=4;
+			}
 
 		}
-	printf(" Valor maximo de cambios : %i \n",k);
 
-	for (i=0;i<450;i++)
-		printf("%i,%i,%i\n",muestreo[i][0],muestreo[i][1],muestreo[i][2]);
+	//	glBegin(GL_LINE_STRIP);
+	//	glColor3f(1.0,1.0,1.0);
+	//    glVertex3f((float)pini.x,(float)pini.y,0.0);
+	//	glVertex3f((float)pfin.x,(float)pfin.y,0.0);
+	//	glEnd();
+	//	glFlush();
+
+	//	for (i=0;i<450;i++)
+	//			printf("%i,%i,%i\n",muestreo[i][0],muestreo[i][1],muestreo[i][2]);
+	//	printf(" Valor maximo de cambios : %i \n",k);
+
+
 	//printf("%i,%i,%i,%i,%i\n",muestreo[i][0],muestreo[i][1],muestreo[i][2],muestreo[i][3],muestreo[i][4]);
 
 }
 
 void Pintar( void) {
-  int i,j,figura=0,jmax,jmin,imax,imin;
- // float k;
-  float color, px, py;
+	int i,j,figura=0,jmax,jmin,imax,imin;
+	// float k;
+	float color, px, py;
 
-  glViewport(0,0,FimaX,FimaY);
+	glViewport(0,0,FimaX,FimaY);
 
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  gluOrtho2D(MinX,ResX,MinY,ResY);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-  
-  glClear(GL_COLOR_BUFFER_BIT);
-  
-  printf("          Repinto amb valor de PLA %d \n",PLA);
-  imax=jmax=0;
-  int tope=15;
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(MinX,ResX,MinY,ResY);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
-  for (j=0; j<ResX-1; j++)
-    for (i=0; i<ResY-1; i++)
-    {
-      glBegin(GL_POLYGON);
-      color=(float)MonActual[i][j][PLA];
+	glClear(GL_COLOR_BUFFER_BIT);
 
-      if (color>tope){
-    	  if (figura!=1){
-    		  imin=i;
-    		  jmin=j;
-    	  }
-    	  figura=1;
-    	  if(j<jmin) jmin=j;
-    	  if(i>imax) imax=i;
-    	  if(i<imin) imin=i;
-    	  if(j>jmax) jmax=j;
-      }
+	printf("          Repinto amb valor de PLA %d \n",PLA);
+	imax=jmax=0;
+	int tope=15;
 
-      color=color/150.0;
-      glColor3f(color,color,color);
-      px=MinX+IncX*i;
-      py=MinY+IncY*j;
-      glVertex3f((float)px,(float)py,0.0);
-      color=(float)MonActual[i+1][j][PLA];
-      color=color/150.0;
-      glColor3f(color,color,color);
-      px=MinX+IncX*(i+1);
-      py=MinY+IncY*j;
-      glVertex3f((float)px,(float)py,0.0);
-      color=(float)MonActual[i+1][j+1][PLA];
-      color=color/150.0;
-      glColor3f(color,color,color);
-      px=MinX+IncX*(i+1);
-      py=MinY+IncY*(j+1);
-      glVertex3f((float)px,(float)py,0.0);
+	for (j=0; j<ResX-1; j++)
+		for (i=0; i<ResY-1; i++)
+		{
+			glBegin(GL_POLYGON);
+			color=(float)MonActual[i][j][PLA];
+
+			if (color>tope){
+				if (figura!=1){
+					imin=i;
+					jmin=j;
+				}
+				figura=1;
+				if(j<jmin) jmin=j;
+				if(i>imax) imax=i;
+				if(i<imin) imin=i;
+				if(j>jmax) jmax=j;
+			}
+
+			color=color/150.0;
+			glColor3f(color,color,color);
+			px=MinX+IncX*i;
+			py=MinY+IncY*j;
+			glVertex3f((float)px,(float)py,0.0);
+			color=(float)MonActual[i+1][j][PLA];
+			color=color/150.0;
+			glColor3f(color,color,color);
+			px=MinX+IncX*(i+1);
+			py=MinY+IncY*j;
+			glVertex3f((float)px,(float)py,0.0);
+			color=(float)MonActual[i+1][j+1][PLA];
+			color=color/150.0;
+			glColor3f(color,color,color);
+			px=MinX+IncX*(i+1);
+			py=MinY+IncY*(j+1);
+			glVertex3f((float)px,(float)py,0.0);
       color=(float)MonActual[i][j+1][PLA];
       color=color/150.0;
       glColor3f(color,color,color);
