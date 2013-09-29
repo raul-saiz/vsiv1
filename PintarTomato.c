@@ -1,35 +1,36 @@
 #include <stdio.h>
 #include <math.h>
 #include "GL/glut.h"
+#include "PintarTomato.h"
 
 // algunes constants per a simplificar el problema
 // i per a mes simplificacio considero la regio cubica i equiespaiada
 
-#define ORIG 0
-#define DIM 256
-#define INC 1.0
-
-
-/* variables per al viewport de la imatge */
+//#define ORIG 0
+//#define DIM 256
+//#define INC 1.0
+//
+//
+///* variables per al viewport de la imatge */
 int FimaX=512;
 int FimaY=512;
-
+//
 int MinX, MinY, MinZ, ResX, ResY, ResZ;
 float IncX, IncY, IncZ;
-
-typedef unsigned char MonVoxels[DIM][DIM][64];
-
+//
+//typedef unsigned char MonVoxels[DIM][DIM][64];
+//
 MonVoxels MonActual;
 GLenum  doubleBuffer, mode;
 int     PLA;
-struct punto{
-	int x;
-	int y;
-};
+//typedef struct punto{
+//	int x;
+//	int y;
+//};
 
 
 void iniValors() {
-  int i,j,k;
+  //int i,j,k;
 
   MinX=ORIG;  MinY=ORIG;  MinZ=ORIG;
   IncX=INC;  IncY=INC;  IncZ=INC;
@@ -101,34 +102,42 @@ void runlength (int minx,int miny,int maxx,int maxy,int PLANO,int interval){
 
 	for (i=minx;i<maxx;i++)
 		for(j=miny;j<maxy;j++){
-			//				if (MonActual[i][j][PLANO]<15){
-			//					if(tipo>0){
-			//						k++;
-			//						pfin.x=i;
-			//						pfin.y=j;
-			//					}
-			//					muestreo[k][0]++;
-			//					tipo=0;
-			//				}
-			//				if (MonActual[i][j][PLANO]>=15){
-			//					if(tipo==0){
-			//						// comprobar los extremos de las lineas y dibujar dos lineas si toca
-			//						glBegin(GL_LINE_STRIP);
-			//						  glColor3f(1.0,1.0,1.0);
-			////						  do {
-			////							  glVertex3f((float)pini.x,(float)pini.y,0.0);
-			////							  pini.x++;
-			////						  } while (pini.x < pfin.x);
-			//						  glVertex3f((float)pini.x,(float)pini.y,0.0);
-			//						  glVertex3f((float)pfin.x,(float)pfin.y,0.0);
-			//						glEnd();
-			//						 glFlush();
-			//						pini.x=i;
-			//						pini.y=j; //debo recoger los max i min para pintar
-			//					}
-			//					muestreo[k][1]++;
-			//					tipo=1;
-			//				}
+
+//////////    INICIO 2 PARTES
+
+//							if (MonActual[i][j][PLANO]<15){
+//								if(tipo>0){
+//									k++;
+//									pfin.x=i;
+//									pfin.y=j;
+//								}
+//								muestreo[k][0]++;
+//								tipo=0;
+//							}
+//							if (MonActual[i][j][PLANO]>=15){
+//								if(tipo==0){
+//									// comprobar los extremos de las lineas y dibujar dos lineas si toca
+//									glBegin(GL_LINE_STRIP);
+//									  glColor3f(1.0,1.0,1.0);
+//									  do {
+//										  glVertex3f((float)pini.x,(float)pini.y,0.0);
+//										  pini.x++;
+//									  } while (pini.x < pfin.x);
+//									  glVertex3f((float)pini.x,(float)pini.y,0.0);
+//									  glVertex3f((float)pfin.x,(float)pfin.y,0.0);
+//									glEnd();
+//									 glFlush();
+//									pini.x=i;
+//									pini.y=j; //debo recoger los max i min para pintar
+//								}
+//								muestreo[k][1]++;
+//								tipo=1;
+//							}
+
+			////////////    FIN 2 PARTES
+
+
+			////////////      INICIO  5  PRATES
 
 			if (MonActual[i][j][PLANO]<colormin+incremento && interval>0){
 				if(tipo>0){
@@ -219,7 +228,9 @@ void runlength (int minx,int miny,int maxx,int maxy,int PLANO,int interval){
 				tipo=4;
 			}
 
-		}
+			////////      FIN   5   PARTES
+
+		}  // fin bucle 5 y 2 partes
 
 	//	glBegin(GL_LINE_STRIP);
 	//	glColor3f(1.0,1.0,1.0);
@@ -311,7 +322,7 @@ void Pintar( void) {
 
   glFlush();
 
-  int restotal=ResX*ResY;
+   int restotal=ResX*ResY;
    int resfora=restotal - ((imax-imin)*(jmax-jmin));
    int resdins=((imax-imin)*(jmax-jmin));
    printf("Pixels dins caixa: %i , pixels fora : %i \n",resdins,resfora);
@@ -345,32 +356,3 @@ void CanviFinestra(int width, int height) {
    glViewport(0,0,FimaX,FimaY);
 }
 
-int main(int argc, char *argv[]) {
-  char *fVolum;
-  GLenum  type;
-
-  if (argc<2)    {
-      printf("Nom executable model_a_pintar \n");
-      return(1);
-    }
-  else    {
-      fVolum = argv[1];
-    }
-  iniValors();
-  llegirMonVoxels(fVolum);
-
-  glutInit(&argc, argv);
-  doubleBuffer=GL_FALSE;
-  type = GLUT_RGB;
-  type |= (doubleBuffer) ? GLUT_DOUBLE : GLUT_SINGLE;
-  glutInitDisplayMode(type);
-  glutInitWindowSize(FimaX,FimaY);
-  glutCreateWindow("Model de voxels");
-  Init();
-  glutKeyboardFunc( Tecles);
-  glutDisplayFunc( Pintar);
-  glutReshapeFunc(CanviFinestra);
-
-  glutMainLoop();
-  return 0;
-}
